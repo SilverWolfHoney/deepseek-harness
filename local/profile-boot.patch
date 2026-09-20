@@ -1,0 +1,20 @@
+diff --git a/apps/cli/src/profile-boot.ts b/apps/cli/src/profile-boot.ts
+index ededd48a87..d9da84b669 100644
+--- a/apps/cli/src/profile-boot.ts
++++ b/apps/cli/src/profile-boot.ts
+@@ -260,7 +260,14 @@ export async function runProfile(options: RunProfileOptions): Promise<{ ctx: Con
+   )
+ 
+   const packaged = (process as NodeJS.Process & { pkg?: unknown }).pkg !== undefined
+-  const resolutionMode = packaged ? 'runtime' : options.resolutionMode ?? 'runtime'
++  // LOCAL PATCH (revert of 9ddef327a4 / PR #4471): a source launch must resolve
++  // plugin entries through the tsx source map, not through absolute `lib/`
++  // paths. 'runtime' hands the loader built entries while tsx rewrites their
++  // inner imports to `src/`, so a package minting a module-level `Symbol()`
++  // exists twice — `ctx.tools[TOOL_RUNTIME_SCHEDULER]` is then undefined and
++  // every tool call fails with "Cannot read properties of undefined
++  // (reading 'prepare')". Real pkg builds still force 'runtime' above.
++  const resolutionMode = packaged ? 'runtime' : options.resolutionMode ?? 'link'
+   const app: { current?: Context } = {}
+   let disposal: Promise<void> | undefined
+   const dispose = (): Promise<void> => disposal ??= (async () => {

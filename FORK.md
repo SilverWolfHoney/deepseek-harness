@@ -2,7 +2,7 @@
 
 本仓库是 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) 的个人 fork，用来承载上游没有的插件 [`packages/context/token-context`](packages/context/token-context/README.md)：它让模型能看见自己的上下文预算。
 
-上游的文件**一个都没有改动**。这是刻意的：`git rebase origin/master` 因此永远不需要解决冲突。
+上游的文件只动过一行：`.gitattributes` 里的 `local/*.patch -whitespace`。它让 pre-commit 的 `git diff --cached --check` 不对保存的 patch 报告尾随空格——patch 格式里"未改动的空行"上下文就是一个单独的空格，那是格式本身的一部分，不是笔误。除此之外没有任何上游文件被改动，`git rebase origin/master` 因此几乎不需要解决冲突。
 
 ## 从零跑起来
 
@@ -74,4 +74,10 @@ git push --force-with-lease fork feat/model-visible-context-budget
 
 这是回退上游 `9ddef327a4`（PR #4471，"feat: resolution mode link to runtime"）的那行默认值。**刻意不提交**：它 revert 了上游一个有意的决定，提交后会让 fork 在该文件上永久分歧，每次同步上游都要重新解决。
 
-代价是它只存在于工作区：**换机器、或工作区被清理时需要手工重建**。
+它不在提交里，但导出保存在 [`local/profile-boot.patch`](local/profile-boot.patch)，所以不会随工作区清理而丢失：
+
+```sh
+git apply local/profile-boot.patch
+```
+
+同步上游前先丢弃它让 rebase 得以进行（`git checkout -- apps/cli/src/profile-boot.ts`），rebase 完成后再 apply 回来。如果 apply 失败，说明上游改动了这个文件，需要按上面说明的原因手工重新适配。
