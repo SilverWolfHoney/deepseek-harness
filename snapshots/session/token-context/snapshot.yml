@@ -1,0 +1,10 @@
+version: 1
+scenario: token-context
+profile: headless
+composition: token-context
+recording: live
+header:
+  class: token-context
+  pin: true
+input:
+  task: Read the file note.txt and reply with its exact contents.

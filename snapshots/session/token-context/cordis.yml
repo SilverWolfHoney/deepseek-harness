@@ -1,0 +1,28 @@
+# Recording patch for the token-context scenario: mount the budget plugin over
+# the shipped headless profile and pin the route the recording uses.
+- id: agent-default-model
+  name: '@deepseek-ai/dsh-agent-default-model'
+  config:
+    provider: deepseek-official
+    model: deepseek-v4-flash
+
+- id: session-persistence-jsonl
+  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  config:
+    root: !!js dshHomePath('sessions')
+    compression: !!js 'process.env.DSH_SNAPSHOT === undefined ? ''zstd'' : ''none'''
+
+# The shipped profile mounts a platform-specific shell tool (pwsh on Windows,
+# bash elsewhere), so this composition disables both: the reading under test
+# needs one filesystem tool call, not a shell.
+- id: tool-bash
+  disabled: true
+
+- id: tool-pwsh
+  disabled: true
+
+- insert:
+    - id: token-context
+      name: '@deepseek-ai/dsh-token-context'
+      config:
+        compactionThresholdRatio: 0.8

@@ -265,6 +265,7 @@
     { "path": "./packages/context/file-reference" },
     { "path": "./packages/context/file-reference-local" },
     { "path": "./packages/context/tmux-context" },
+    { "path": "./packages/context/token-context" },
     { "path": "./packages/context/session-reference" },
     { "path": "./packages/interaction/user-questions" },
     { "path": "./packages/interaction/user-approval" },

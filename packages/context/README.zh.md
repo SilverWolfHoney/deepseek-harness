@@ -9,7 +9,7 @@ kind: "package-group"
 
 ## 概述
 
-context 组提供不定义任何工具、为每次请求添加模型可见上下文的插件：工作区指令文件成为指引，`@file` 提及提供路径补全，其他会话可以作为有界快照被引用，模型还能看到当前时间与 agent（智能体）的 tmux 位置。除 `agent-instructions`（`dsh-base` 默认包含它，profile patch 可以禁用）外，其余全部需主动启用。上下文是持久的：注入的指令与引用以用户角色消息的形式进入会话历史，因此与其他对话内容一样持久保留、可回放、可压缩。本页概述本组；包级约定由各包 README 负责。
+context 组提供不定义任何工具、为每次请求添加模型可见上下文的插件：工作区指令文件成为指引，`@file` 提及提供路径补全，其他会话可以作为有界快照被引用，模型还能看到当前时间、其 token 预算与 agent（智能体）的 tmux 位置。除 `agent-instructions`（`dsh-base` 默认包含它，profile patch 可以禁用）外，其余全部需主动启用。上下文是持久的：注入的指令与引用以用户角色消息的形式进入会话历史，因此与其他内容一样持久保留、可回放、可压缩。本页概述本组；包级约定由各包 README 负责。
 
 ## 目录
 
@@ -29,6 +29,7 @@ context 组提供不定义任何工具、为每次请求添加模型可见上下
 | [`file-reference/`](file-reference/README.zh.md) | 发现 `@file` 提及，并提供由宿主支持的 UI 共用的提及语法 | `ctx.fileReferences` |
 | [`file-reference-local/`](file-reference-local/README.zh.md) | `@file` 提及的本地工作区补全提供方 | — |
 | [`time-context/`](time-context/README.zh.md) | 每个步骤的当前时间、浏览器时区与经过时长 | — |
+| [`token-context/`](token-context/README.zh.md) | 每个步骤的会话 token 预算、压缩余量与累计用量 | — |
 | [`tmux-context/`](tmux-context/README.zh.md) | agent 所在的 tmux 会话、窗口与窗格位置 | — |
 
 -----

@@ -2999,6 +2999,29 @@ export interface Config {
 
 Source: [`packages/context/tmux-context/src/index.ts:36`](../packages/context/tmux-context/src/index.ts)
 
+<a id="deepseek-aidsh-token-context"></a>
+
+## `@deepseek-ai/dsh-token-context`
+
+Requires: `agents` · `sessionProjections` · `tokenMeter`
+
+```ts config-catalog
+/** Request-budget reporting and append scheduling. Invalid values fail plugin load. */
+export interface Config {
+  /** Minimum milliseconds between durable injections in one session. Omit or set to 0 to inject at every eligible step. */
+  refreshIntervalMs?: number
+  /**
+   * Fraction of the context window at which this deployment's compaction
+   * backend condenses history. When set, each reading also reports the
+   * headroom left before that threshold, which is the number that decides
+   * whether the current approach still fits.
+   */
+  compactionThresholdRatio?: number
+}
+```
+
+Source: [`packages/context/token-context/src/index.ts:46`](../packages/context/token-context/src/index.ts)
+
 <a id="deepseek-aidsh-token-meter"></a>
 
 ## `@deepseek-ai/dsh-token-meter`
