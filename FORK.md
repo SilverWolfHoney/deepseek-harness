@@ -70,6 +70,8 @@ git push --force-with-lease fork feat/model-visible-context-budget
 
 工作区里通常留着一处**不属于本分支**的改动：`apps/cli/src/profile-boot.ts` 把源码启动的 `resolutionMode` 默认值从 `runtime` 改回 `link`。
 
-它修复的现象是源码启动下每次工具调用都失败（`ctx.tools[TOOL_RUNTIME_SCHEDULER]` 为 undefined）——模块级 `Symbol()` 因 tsx 与 `lib/` 混用而存在两份。这是本机环境适配，**刻意不提交**，因为它 revert 了上游的一个 PR，提交后会让 fork 在该文件上永久分歧。
+它修复的现象是源码启动后**任何工具调用都挂**在 `Cannot read properties of undefined (reading 'prepare')`。`runtime` 模式把插件入口按绝对 `lib/` 路径交给 Loader（绕过 tsx），而 `lib/` 文件内部的 bare import 又被 tsx 按 tsconfig paths 改写成 `src`，于是同一个包存在两份实例、两个模块级 `Symbol()`，`ctx.tools[TOOL_RUNTIME_SCHEDULER]` 取成 `undefined`。改成 `link` 让整棵树都走 bare specifier 映射到 `src`，同源。`packaged` 分支仍强制 `runtime`，所以打包产物不受影响；附带好处是源码模式的热生效回来了（改 `packages/*/src` 不必重新构建）。
+
+这是回退上游 `9ddef327a4`（PR #4471，"feat: resolution mode link to runtime"）的那行默认值。**刻意不提交**：它 revert 了上游一个有意的决定，提交后会让 fork 在该文件上永久分歧，每次同步上游都要重新解决。
 
 代价是它只存在于工作区：**换机器、或工作区被清理时需要手工重建**。
